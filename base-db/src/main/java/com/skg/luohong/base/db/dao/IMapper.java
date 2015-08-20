@@ -8,6 +8,9 @@ import com.skg.luohong.base.core.page.IPage;
 
 /**
  * mapper接口定义
+ * 由于mybatis会自动生成mapper，所以所以子类的mapper接口直接继承该类即可
+ * 
+ * 在这里面，mapper默认的方法是非常丰富的，包含了增删改查的功能
  * @author 骆宏
  * @date 2015-08-19 23:02
  * */

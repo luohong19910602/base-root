@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 其中
  * */
 public abstract class AbstractPo<PK extends Serializable> implements IPO<PK>  {
     private PK id;

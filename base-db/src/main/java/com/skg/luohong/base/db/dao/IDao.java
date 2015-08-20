@@ -13,7 +13,7 @@ import com.skg.luohong.base.core.page.IPage;
  * @author 骆宏 15013336884 846705189@qq.com
  * @date 2015-08-18 17:06
  * */
-public interface IDao<PK extends Serializable,PO extends IPO<PK>> {
+public interface IDao<PK extends Serializable, PO extends IPO<PK>> {
     
 	public IMapper<PK, PO> getMapper();
 	

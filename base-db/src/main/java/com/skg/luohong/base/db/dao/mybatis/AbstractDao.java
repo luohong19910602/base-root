@@ -9,6 +9,14 @@ import com.skg.luohong.base.db.dao.IDao;
 import com.skg.luohong.base.db.dao.IMapper;
 import com.skg.luohong.base.db.dao.IPO;
 
+/**
+ * 所有的子类dao直接继承该类，提供mapper即可
+ * 这里面使用模板方法设计模式
+ * 
+ * 
+ * @author 骆宏 15013336884
+ * @date 2015-08-20 15:53
+ * */
 public abstract class AbstractDao<PK extends Serializable, PO extends IPO<PK>> implements IDao<PK, PO> {
 
 	@Override
