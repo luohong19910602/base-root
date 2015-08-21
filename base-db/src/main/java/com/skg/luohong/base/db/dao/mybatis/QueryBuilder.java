@@ -62,7 +62,7 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 
 	@Override
 	public String getLimitSql() {
-		return "limit " + start + ", " + limit;
+		return " limit " + start + ", " + limit;
 	}
 
 	@Override
@@ -180,9 +180,7 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 		builder.setLimit(10);
 		builder.setStart(0);
 		
-		System.out.println(builder.getLimitSql());
-		System.out.println(builder.getOrderBySql());
-		System.out.println(builder.getWhereSql());
+		System.out.println(builder.getWhereSql() + builder.getOrderBySql() + builder.getLimitSql());
 	}
 
 }
