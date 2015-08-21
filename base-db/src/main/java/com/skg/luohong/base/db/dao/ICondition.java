@@ -5,6 +5,12 @@ import java.util.List;
 
 /**
  * 查询条件的封装
+ * 
+ * 在这里面，如果涉及到多个表的关联查询，那么需要在key前面加入表名，比如查询订单与客户：
+ * 
+ * select * from order,customer where order.customer_id = '1234'
+ * 这里面，key变成了order.customer_id
+ * 
  * @author 骆宏
  * @date 2015-08-20 16:21
  * */

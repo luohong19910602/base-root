@@ -2,8 +2,11 @@ package com.skg.luohong.base.db.dao.mybatis;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.skg.luohong.base.core.page.IPage;
 import com.skg.luohong.base.db.dao.ICondition;
 import com.skg.luohong.base.db.dao.ILimit;
 import com.skg.luohong.base.db.dao.IOrder;
@@ -16,15 +19,26 @@ import com.skg.luohong.base.db.dao.IQuery;
  * */
 public class QueryBuilder implements IQuery, IOrder, ILimit {
     
-	List<ICondition> conditionList = new ArrayList<ICondition>();
-
+	private List<ICondition> conditionList = new ArrayList<ICondition>();
+    private Map<String, String> orders = new HashMap<String, String>();
+	
+    private int start;
+	private int limit;
+	
 	public QueryBuilder(){
 		
 	}
 	
 	@Override
 	public String getOrderBySql() {
-		return null;
+		if(orders.size() == 0) return "";
+		StringBuilder sb = new StringBuilder();
+		sb.append(" order by ");
+		for(String key: orders.keySet()){
+			sb.append(key + " " + orders.get(key) + ",");
+		}
+		
+		return sb.substring(0, sb.length() - 1);
 	}
 
 	@Override
@@ -48,7 +62,7 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 
 	@Override
 	public String getLimitSql() {
-		return null;
+		return "limit " + start + ", " + limit;
 	}
 
 	@Override
@@ -65,6 +79,45 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 				addCondition(con);
 			}
 		}
+	}
+	
+	@Override
+	public void add(String key, String sort) {
+		if(key == null) throw new IllegalArgumentException("Key can't be null");
+		
+		if(sort.equalsIgnoreCase(IOrder.DESC)){
+			orders.put(key, IOrder.DESC);
+		}else if(sort.equalsIgnoreCase(IOrder.ASC)){
+			orders.put(key, IOrder.ASC);
+		}else{
+			throw new IllegalArgumentException("Please check sort argument, it must be in [asc, desc]");
+		}
+	}
+	
+
+	@Override
+	public void setStart(int start) {
+		if(start < 0){
+			throw new IllegalArgumentException("start must be >= 0");
+		}
+		
+		this.start = start;
+	}
+
+	@Override
+	public void setLimit(int limit) {
+		if(limit < 1){
+			throw new IllegalArgumentException("int limit must be >= 1");
+		}
+		
+		this.limit = limit;
+	}
+	
+
+	@Override
+	public void setPage(IPage page) {
+		this.limit = page.getLimit();
+		this.start = page.getStart();
 	}
 	
 	public static void main(String[] args) {
@@ -118,6 +171,18 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 		System.out.println(eqdate.getSql());
 		builder.addCondition(eqdate);
 		
+		builder.add("name", "desc");
+		builder.add("age", "DESC");
+		builder.add("tel", "Desc");
+		builder.add("mobile", "Asc");
+		builder.add("email", "asc");
+		builder.add("id", "ASC");
+		builder.setLimit(10);
+		builder.setStart(0);
+		
+		System.out.println(builder.getLimitSql());
+		System.out.println(builder.getOrderBySql());
 		System.out.println(builder.getWhereSql());
 	}
+
 }
