@@ -99,7 +99,7 @@ public class Condition implements ICondition {
 	public String getSql() {
 		if(type.equals(ICondition.DEFAULT_TYPE)){
 			if(op.equals(ICondition.StringOpType.LIKE)){
-				return key + " like %" + value + "%"; 
+				return key + " like '%" + value + "%'"; 
 			}else if(op.equals(ICondition.StringOpType.EQ)){
 				return key + " = '" + value + "'";
 			}

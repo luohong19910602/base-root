@@ -8,16 +8,18 @@ import java.util.Map;
 
 import com.skg.luohong.base.core.page.IPage;
 import com.skg.luohong.base.db.dao.ICondition;
-import com.skg.luohong.base.db.dao.ILimit;
 import com.skg.luohong.base.db.dao.IOrder;
-import com.skg.luohong.base.db.dao.IQuery;
+import com.skg.luohong.base.db.dao.ISqlParamBuilder;
+import com.skg.luohong.base.db.dao.SqlParam;
 
 /**
  * mybatis的查询构建器，实现IQuery，IOrder，ILimit
  * 在mybatis中，将sql拆分为三个部分，一个是where部分，一个是order by部分，另外一个是limit部分
  * 比如：select * from user where name='luohong' order by create_time limit 0,10
+ * 
+ * 在Mybatis中，将会使用该类来创建where sql, order by sql, limit sql部分的参数内容
  * */
-public class QueryBuilder implements IQuery, IOrder, ILimit {
+public class DynamicSqlParamBuilder implements ISqlParamBuilder {
     
 	private List<ICondition> conditionList = new ArrayList<ICondition>();
     private Map<String, String> orders = new HashMap<String, String>();
@@ -25,7 +27,7 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
     private int start;
 	private int limit;
 	
-	public QueryBuilder(){
+	public DynamicSqlParamBuilder(){
 		
 	}
 	
@@ -48,7 +50,7 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 		}
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(" where ");
+		sb.append(" ");
 		for(int i=0; i<conditionList.size(); i++){
 			if(i == conditionList.size() - 1){				
 				sb.append(conditionList.get(i).getSql());
@@ -62,7 +64,11 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 
 	@Override
 	public String getLimitSql() {
-		return " limit " + start + ", " + limit;
+		if(start != 0){			
+			return " limit " + start + ", " + limit;
+		}else{
+			return "";
+		}
 	}
 
 	@Override
@@ -113,15 +119,19 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 		this.limit = limit;
 	}
 	
-
 	@Override
 	public void setPage(IPage page) {
 		this.limit = page.getLimit();
 		this.start = page.getStart();
 	}
+
+	@Override
+	public SqlParam buildSqlParam() {
+		return new SqlParam(getWhereSql(), getOrderBySql(), getLimitSql());
+	}
 	
 	public static void main(String[] args) {
-		QueryBuilder builder = new QueryBuilder();
+		DynamicSqlParamBuilder builder = new DynamicSqlParamBuilder();
 		Condition eq = new Condition("name", "eq", "骆宏");
 		System.out.println(eq);
 		System.out.println(eq.getSql());
@@ -181,6 +191,8 @@ public class QueryBuilder implements IQuery, IOrder, ILimit {
 		builder.setStart(0);
 		
 		System.out.println(builder.getWhereSql() + builder.getOrderBySql() + builder.getLimitSql());
+		System.out.println(builder.buildSqlParam());
 	}
+
 
 }
