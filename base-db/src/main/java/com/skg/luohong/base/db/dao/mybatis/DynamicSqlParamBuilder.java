@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
+
 import com.skg.luohong.base.core.page.IPage;
 import com.skg.luohong.base.db.dao.ICondition;
 import com.skg.luohong.base.db.dao.IOrder;
@@ -35,7 +37,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 	public String getOrderBySql() {
 		if(orders.size() == 0) return "";
 		StringBuilder sb = new StringBuilder();
-		sb.append(" order by ");
+		sb.append(" ");
 		for(String key: orders.keySet()){
 			sb.append(key + " " + orders.get(key) + ",");
 		}
@@ -64,7 +66,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 
 	@Override
 	public String getLimitSql() {
-		if(start != 0){			
+		if(limit != 0){			
 			return " limit " + start + ", " + limit;
 		}else{
 			return "";
@@ -120,14 +122,30 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 	}
 	
 	@Override
+	public RowBounds buildRowBounds() {
+		return new RowBounds(start, limit);
+	}
+	
+	@Override
 	public void setPage(IPage page) {
 		this.limit = page.getLimit();
 		this.start = page.getStart();
 	}
+	
+
+	@Override
+	public int getStart() {
+		return start;
+	}
+
+	@Override
+	public int getLimit() {
+		return limit;
+	}
 
 	@Override
 	public SqlParam buildSqlParam() {
-		return new SqlParam(getWhereSql(), getOrderBySql(), getLimitSql());
+		return new SqlParam(getWhereSql(), getOrderBySql());
 	}
 	
 	public static void main(String[] args) {
@@ -193,6 +211,4 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 		System.out.println(builder.getWhereSql() + builder.getOrderBySql() + builder.getLimitSql());
 		System.out.println(builder.buildSqlParam());
 	}
-
-
 }
