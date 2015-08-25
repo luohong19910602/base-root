@@ -64,7 +64,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 
 	@Override
 	public String getLimitSql() {
-		if(start != 0){			
+		if(limit > 0){			
 			return " limit " + start + ", " + limit;
 		}else{
 			return "";
