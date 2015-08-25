@@ -37,7 +37,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 	public String getOrderBySql() {
 		if(orders.size() == 0) return "";
 		StringBuilder sb = new StringBuilder();
-		sb.append(" ");
+		sb.append(" order by ");
 		for(String key: orders.keySet()){
 			sb.append(key + " " + orders.get(key) + ",");
 		}
@@ -145,7 +145,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 
 	@Override
 	public SqlParam buildSqlParam() {
-		return new SqlParam(getWhereSql(), getOrderBySql());
+		return new SqlParam(getWhereSql(), getOrderBySql(), getLimitSql());
 	}
 	
 	public static void main(String[] args) {

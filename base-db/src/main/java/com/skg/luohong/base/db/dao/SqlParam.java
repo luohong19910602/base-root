@@ -12,18 +12,23 @@ package com.skg.luohong.base.db.dao;
 public class SqlParam {
 	private String whereSql;
 	private String orderSql;
+	private String limitSql;
 
 	public SqlParam(){
     
 	}
 
-	public SqlParam(String whereSql, String orderSql){
+	public SqlParam(String whereSql, String orderSql, String limitSql){
 		if(whereSql != null && !"".equals(whereSql)){
 			this.whereSql = whereSql;
 		}
 		if(orderSql != null && !"".equals(orderSql)){
 		    this.orderSql = orderSql;
 		}
+		if(limitSql != null && !"".equals(limitSql)){
+		    this.limitSql = limitSql;
+		}
+		
 	}
 
 	public String getWhereSql() {
@@ -38,8 +43,17 @@ public class SqlParam {
 	public void setOrderSql(String orderSql) {
 		this.orderSql = orderSql;
 	}
+	
+	public String getLimitSql() {
+		return limitSql;
+	}
+
+	public void setLimitSql(String limitSql) {
+		this.limitSql = limitSql;
+	}
+
 	@Override
 	public String toString(){
-		return whereSql + " order by " + orderSql;
+		return whereSql + " order by " + orderSql + " " + limitSql;
 	}
 }
