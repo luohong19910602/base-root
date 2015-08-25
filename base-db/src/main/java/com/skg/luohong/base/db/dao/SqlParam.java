@@ -15,7 +15,7 @@ public class SqlParam {
 	private String limitSql;
 
 	public SqlParam(){
-
+    
 	}
 
 	public SqlParam(String whereSql, String orderSql, String limitSql){
@@ -26,8 +26,9 @@ public class SqlParam {
 		    this.orderSql = orderSql;
 		}
 		if(limitSql != null && !"".equals(limitSql)){
-			this.limitSql = limitSql;
+		    this.limitSql = limitSql;
 		}
+		
 	}
 
 	public String getWhereSql() {
@@ -42,15 +43,17 @@ public class SqlParam {
 	public void setOrderSql(String orderSql) {
 		this.orderSql = orderSql;
 	}
+	
 	public String getLimitSql() {
 		return limitSql;
 	}
+
 	public void setLimitSql(String limitSql) {
 		this.limitSql = limitSql;
 	}
 
 	@Override
 	public String toString(){
-		return whereSql + " " + orderSql + " " + limitSql;
+		return whereSql + " order by " + orderSql + " " + limitSql;
 	}
 }

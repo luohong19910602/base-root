@@ -1,11 +1,13 @@
 package com.skg.luohong.base.core.page;
 
+import org.apache.ibatis.session.RowBounds;
+
 /**
  * 翻页的默认实现对象
  * @author 骆宏 15013336884 846705189@qq.com
  * @date 2015-08-18 17:22
  * */
-public class DefaultPage implements IPage{
+public class DefaultPage extends RowBounds implements IPage{
 
 	private int limit = DEFAULT_LIMIT;
 	private int totalRecords; 
@@ -21,10 +23,12 @@ public class DefaultPage implements IPage{
 		setPageNumber(pageNumber);
 	}
 	
+	@Override
 	public int getLimit() {
 		return limit;
 	}
 
+	@Override
 	public int getPageNumber() {
 		return pageNumber;
 	}
@@ -43,6 +47,11 @@ public class DefaultPage implements IPage{
 
 	public int getStart() {
 		return (pageNumber - 1) * limit;
+	}
+	
+	@Override
+	public int getOffset(){
+		return getStart();
 	}
 
 	public void setPageNumber(int pageNumber) {

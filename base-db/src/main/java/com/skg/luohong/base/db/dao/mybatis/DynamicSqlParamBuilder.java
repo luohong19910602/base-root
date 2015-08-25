@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
+
 import com.skg.luohong.base.core.page.IPage;
 import com.skg.luohong.base.db.dao.ICondition;
 import com.skg.luohong.base.db.dao.IOrder;
@@ -64,7 +66,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 
 	@Override
 	public String getLimitSql() {
-		if(limit > 0){			
+		if(limit != 0){			
 			return " limit " + start + ", " + limit;
 		}else{
 			return "";
@@ -120,9 +122,25 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 	}
 	
 	@Override
+	public RowBounds buildRowBounds() {
+		return new RowBounds(start, limit);
+	}
+	
+	@Override
 	public void setPage(IPage page) {
 		this.limit = page.getLimit();
 		this.start = page.getStart();
+	}
+	
+
+	@Override
+	public int getStart() {
+		return start;
+	}
+
+	@Override
+	public int getLimit() {
+		return limit;
 	}
 
 	@Override
@@ -193,6 +211,4 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 		System.out.println(builder.getWhereSql() + builder.getOrderBySql() + builder.getLimitSql());
 		System.out.println(builder.buildSqlParam());
 	}
-
-
 }

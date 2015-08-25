@@ -11,6 +11,10 @@ import com.skg.luohong.base.core.page.IPage;
 public interface ILimit {
     String getLimitSql();
     
+    int getStart();
+    
+    int getLimit();
+    
     /**
      * 查询开始下标
      * @param start
