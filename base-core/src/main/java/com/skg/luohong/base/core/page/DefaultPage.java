@@ -1,13 +1,12 @@
 package com.skg.luohong.base.core.page;
 
-import org.apache.ibatis.session.RowBounds;
 
 /**
  * 翻页的默认实现对象
  * @author 骆宏 15013336884 846705189@qq.com
  * @date 2015-08-18 17:22
  * */
-public class DefaultPage extends RowBounds implements IPage{
+public class DefaultPage implements IPage{
 
 	private int limit = DEFAULT_LIMIT;
 	private int totalRecords; 
@@ -21,11 +20,6 @@ public class DefaultPage extends RowBounds implements IPage{
 		setTotalRecords(totalRecords);
 		setLimit(limit);
 		setPageNumber(pageNumber);
-	}
-	
-	@Override
-	public int getLimit() {
-		return limit;
 	}
 
 	@Override
@@ -45,13 +39,9 @@ public class DefaultPage extends RowBounds implements IPage{
 		return totalRecords;
 	}
 
-	public int getStart() {
-		return (pageNumber - 1) * limit;
-	}
-	
 	@Override
 	public int getOffset(){
-		return getStart();
+		return (pageNumber - 1) * limit;
 	}
 
 	public void setPageNumber(int pageNumber) {
@@ -68,6 +58,11 @@ public class DefaultPage extends RowBounds implements IPage{
 		
 		this.limit = limit;
 	}
+	
+	@Override
+	public int getLimit() {
+		return limit;
+	}
 
 	public void setTotalRecords(int totalRecords) {
 		if(totalRecords < 0){
@@ -79,12 +74,11 @@ public class DefaultPage extends RowBounds implements IPage{
 	
 	@Override
 	public String toString(){
-		return "totalRecords:" + totalRecords + ", totalPage:" + getTotalPage() + ",limit:" + limit + ",start:" + getStart() + ",pageNumber:" + getPageNumber();
+		return "totalRecords:" + totalRecords + ", totalPage:" + getTotalPage() + ",offset:" + getOffset() + ",limit:" + limit + ",pageNumber:" + getPageNumber();
 	}
-
+	
 	public static void main(String[] args) {
-		IPage page = new DefaultPage(5000);
-		
+		IPage page = new DefaultPage(100);
 		System.out.println(page);
 	}
 }

@@ -54,6 +54,6 @@ public class SqlParam {
 
 	@Override
 	public String toString(){
-		return whereSql + " order by " + orderSql + " " + limitSql;
+		return whereSql + orderSql + " " + limitSql;
 	}
 }

@@ -1,6 +1,5 @@
 package com.skg.luohong.base.db.dao;
 
-import org.apache.ibatis.session.RowBounds;
 
 /**
  * 创造whereSql, orderSql, limitSql
@@ -9,5 +8,4 @@ import org.apache.ibatis.session.RowBounds;
  * */
 public interface ISqlParamBuilder extends IQuery, IOrder, ILimit {
     SqlParam buildSqlParam();
-    RowBounds buildRowBounds();
 }

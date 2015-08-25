@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.session.RowBounds;
-
 import com.skg.luohong.base.core.page.IPage;
 import com.skg.luohong.base.db.dao.ICondition;
 import com.skg.luohong.base.db.dao.IOrder;
@@ -22,17 +20,17 @@ import com.skg.luohong.base.db.dao.SqlParam;
  * 在Mybatis中，将会使用该类来创建where sql, order by sql, limit sql部分的参数内容
  * */
 public class DynamicSqlParamBuilder implements ISqlParamBuilder {
-    
+
 	private List<ICondition> conditionList = new ArrayList<ICondition>();
-    private Map<String, String> orders = new HashMap<String, String>();
-	
-    private int start;
+	private Map<String, String> orders = new HashMap<String, String>();
+
+	private int offset;
 	private int limit;
-	
+
 	public DynamicSqlParamBuilder(){
-		
+
 	}
-	
+
 	@Override
 	public String getOrderBySql() {
 		if(orders.size() == 0) return "";
@@ -41,7 +39,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 		for(String key: orders.keySet()){
 			sb.append(key + " " + orders.get(key) + ",");
 		}
-		
+
 		return sb.substring(0, sb.length() - 1);
 	}
 
@@ -50,7 +48,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 		if(conditionList.size() == 0){
 			return "";
 		}
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(" ");
 		for(int i=0; i<conditionList.size(); i++){
@@ -60,14 +58,14 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 				sb.append(conditionList.get(i).getSql() + " and ");
 			}
 		}
-		
+
 		return sb.toString();
 	}
 
 	@Override
 	public String getLimitSql() {
 		if(limit != 0){			
-			return " limit " + start + ", " + limit;
+			return " limit " + offset + ", " + limit;
 		}else{
 			return "";
 		}
@@ -88,11 +86,11 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 			}
 		}
 	}
-	
+
 	@Override
 	public void add(String key, String sort) {
 		if(key == null) throw new IllegalArgumentException("Key can't be null");
-		
+
 		if(sort.equalsIgnoreCase(IOrder.DESC)){
 			orders.put(key, IOrder.DESC);
 		}else if(sort.equalsIgnoreCase(IOrder.ASC)){
@@ -101,41 +99,30 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 			throw new IllegalArgumentException("Please check sort argument, it must be in [asc, desc]");
 		}
 	}
-	
-
-	@Override
-	public void setStart(int start) {
-		if(start < 0){
-			throw new IllegalArgumentException("start must be >= 0");
-		}
-		
-		this.start = start;
-	}
 
 	@Override
 	public void setLimit(int limit) {
 		if(limit < 1){
 			throw new IllegalArgumentException("int limit must be >= 1");
 		}
-		
+
 		this.limit = limit;
 	}
-	
-	@Override
-	public RowBounds buildRowBounds() {
-		return new RowBounds(start, limit);
-	}
-	
+
 	@Override
 	public void setPage(IPage page) {
 		this.limit = page.getLimit();
-		this.start = page.getStart();
+		this.offset = page.getOffset();
 	}
-	
+
+
+	public void setOffset(int offset){
+
+	}
 
 	@Override
-	public int getStart() {
-		return start;
+	public int getOffset(){
+		return offset;
 	}
 
 	@Override
@@ -147,44 +134,44 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 	public SqlParam buildSqlParam() {
 		return new SqlParam(getWhereSql(), getOrderBySql(), getLimitSql());
 	}
-	
+
 	public static void main(String[] args) {
 		DynamicSqlParamBuilder builder = new DynamicSqlParamBuilder();
 		Condition eq = new Condition("name", "eq", "骆宏");
 		System.out.println(eq);
 		System.out.println(eq.getSql());
 		builder.addCondition(eq);
-		
+
 		Condition nq = new Condition("name", "nq", "骆宏");
 		System.out.println(nq);
 		System.out.println(nq.getSql());	
 		builder.addCondition(nq);
-		
+
 		Condition con = new Condition("name", "like", "骆宏");
 		System.out.println(con);
 		System.out.println(con.getSql());
 		builder.addCondition(con);
-		
+
 		Condition num = new Condition("sort", "gt", "10", ICondition.NUMBER_TYPE);
 		System.out.println(num);
 		System.out.println(num.getSql());
 		builder.addCondition(num);
-		
+
 		Condition eqnum = new Condition("sort", "eq", "10", ICondition.NUMBER_TYPE);
 		System.out.println(eqnum);
 		System.out.println(eqnum.getSql());
-		
+
 		builder.addCondition(eqnum);
 		Condition nqnum = new Condition("sort", "nq", "10", ICondition.NUMBER_TYPE);
 		System.out.println(nqnum);
 		System.out.println(nqnum.getSql());
-		
+
 		Condition ltnum = new Condition("sort", "lt", "10", ICondition.NUMBER_TYPE);
 		System.out.println(ltnum);
 		System.out.println(ltnum.getSql());
-		
+
 		builder.addCondition(ltnum);
-		
+
 		Condition date = new Condition("createTime", "gt", new Date(), "date");
 		System.out.println(date);
 		System.out.println(date.getSql());
@@ -193,12 +180,12 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 		System.out.println(ltdate);
 		System.out.println(ltdate.getSql());
 		builder.addCondition(ltdate);
-		
+
 		Condition eqdate = new Condition("createTime", "eq", new Date(), "date");
 		System.out.println(eqdate);
 		System.out.println(eqdate.getSql());
 		builder.addCondition(eqdate);
-		
+
 		builder.add("name", "desc");
 		builder.add("age", "DESC");
 		builder.add("tel", "Desc");
@@ -206,9 +193,9 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 		builder.add("email", "asc");
 		builder.add("id", "ASC");
 		builder.setLimit(10);
-		builder.setStart(0);
-		
+
 		System.out.println(builder.getWhereSql() + builder.getOrderBySql() + builder.getLimitSql());
 		System.out.println(builder.buildSqlParam());
 	}
+
 }

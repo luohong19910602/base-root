@@ -39,7 +39,7 @@ public interface IPage {
     /**
      * 从第几条记录开始查询
      * */
-    public int getStart();
+    public int getOffset();
     
     /**
      * 设置当前的页码数

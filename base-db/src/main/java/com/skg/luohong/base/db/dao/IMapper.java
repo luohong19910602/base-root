@@ -2,9 +2,6 @@ package com.skg.luohong.base.db.dao;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-
-import com.skg.luohong.base.core.page.IPage;
 
 /**
  * mapper接口定义
@@ -53,49 +50,27 @@ public interface IMapper<PK extends Serializable, PO extends IPO<PK>> {
 	public PO getLast();
 
 	/**
-	 * 查询count方法
-	 * @return
-	 */
-	public Integer countAll();
-
-	/**
-	 * 查询count方法，传入参数
-	 * @param params
-	 * @return
-	 */
-	public Integer count(Map<String, Object> params);
-
+	 * 根据sql参数来获取记录数
+	 * @param param sql参数
+	 * */
+	public Integer countAll();	
+	
 	/**
 	 * find all records
 	 * @return
 	 * */
 	public List<PO> findAll();
-
+	
 	/**
-	 * find all records
-	 * alias of the findAll()
-	 * @return
+	 * 根据sql参数来获取记录数
+	 * @param param sql参数
 	 * */
-	public List<PO> listAll();
-
+	public Integer countAll(SqlParam params);
+	
 	/**
-	 * find by page
-	 * @param page the page of the records
-	 * @return the list of the records
-	 * */
-	public List<PO> findPaged(IPage page);
-
-	/**
-	 * find by page and params
-	 * @params the map of the param,there will be use mybatis dynamic sql feature
-	 * @return the list of the records
-	 * */
-	public List<PO> findPaged(Map<String, Object> params,IPage page);
-
-	/**
-	 * find all
-	 * @param the map of the param, there will be use mybatis dynamic sql feature
-	 * @return
-	 * */
-	public List<PO> findAll(Map<String, Object> params);
+     * 根据sql参数查询，然后返回查询到的对象集合
+     * @param params 查询的sql参数
+     * @return
+     * */
+	public List<PO> findAll(SqlParam params);
 }

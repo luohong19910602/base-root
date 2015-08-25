@@ -2,12 +2,11 @@ package com.skg.luohong.base.db.dao.mybatis;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
-import com.skg.luohong.base.core.page.IPage;
 import com.skg.luohong.base.db.dao.IDao;
 import com.skg.luohong.base.db.dao.IMapper;
 import com.skg.luohong.base.db.dao.IPO;
+import com.skg.luohong.base.db.dao.SqlParam;
 
 /**
  * 所有的子类dao直接继承该类，提供mapper即可
@@ -48,44 +47,23 @@ public abstract class AbstractDao<PK extends Serializable, PO extends IPO<PK>> i
 	public PO get(PK id) {
 		return getMapper().get(id);
 	}
-
-	@Override
-	public PO getLast() {
-		return getMapper().getLast();
-	}
-
+	
 	@Override
 	public Integer countAll() {
 		return getMapper().countAll();
 	}
-
-	@Override
-	public Integer count(Map<String, Object> params) {
-		return getMapper().count(params);
-	}
-
+	
 	@Override
 	public List<PO> findAll() {
 		return getMapper().findAll();
 	}
 
 	@Override
-	public List<PO> listAll() {
-		return getMapper().listAll();
+	public Integer countAll(SqlParam param){
+		return getMapper().countAll(param);
 	}
-
-	@Override
-	public List<PO> findPaged(IPage page) {
-		return getMapper().findPaged(page);
-	}
-
-	@Override
-	public List<PO> findPaged(Map<String, Object> params, IPage page) {
-		return getMapper().findPaged(params, page);
-	}
-
-	@Override
-	public List<PO> findAll(Map<String, Object> params) {
+	
+	public List<PO> findAll(SqlParam params){
 		return getMapper().findAll(params);
 	}
 }
