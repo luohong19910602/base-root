@@ -19,7 +19,7 @@ import com.skg.luohong.base.db.dao.SqlParam;
  * 
  * 在Mybatis中，将会使用该类来创建where sql, order by sql, limit sql部分的参数内容
  * */
-public class DynamicSqlParamBuilder implements ISqlParamBuilder {
+public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 
 	private List<ICondition> conditionList = new ArrayList<ICondition>();
 	private Map<String, String> orders = new HashMap<String, String>();
@@ -27,7 +27,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 	private int offset;
 	private int limit;
 
-	public DynamicSqlParamBuilder(){
+	public DefaultSqlParamBuilder(){
 
 	}
 
@@ -136,7 +136,7 @@ public class DynamicSqlParamBuilder implements ISqlParamBuilder {
 	}
 
 	public static void main(String[] args) {
-		DynamicSqlParamBuilder builder = new DynamicSqlParamBuilder();
+		DefaultSqlParamBuilder builder = new DefaultSqlParamBuilder();
 		Condition eq = new Condition("name", "eq", "骆宏");
 		System.out.println(eq);
 		System.out.println(eq.getSql());
