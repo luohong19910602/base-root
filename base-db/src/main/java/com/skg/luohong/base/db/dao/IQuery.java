@@ -10,6 +10,9 @@ import java.util.List;
  * */
 public interface IQuery {
 	
+	public static final String AND = "and";
+	public static final String OR = "or";
+	
 	/**
 	 * 获取查询sql
 	 * 这里面不包含排序 order by部分
@@ -28,4 +31,11 @@ public interface IQuery {
      * @param conditions
      * */
     void addConditions(List<ICondition> conditions);
+    
+    /**
+     * 多个条件之间的关系，默认为and
+     * */
+    String getType();
+    
+    void setType(String type);
 }

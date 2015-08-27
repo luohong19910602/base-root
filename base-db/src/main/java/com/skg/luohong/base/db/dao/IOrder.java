@@ -17,5 +17,5 @@ public interface IOrder {
      * @param key
      * @param sort 降序或者升序，sort的值为desc,asc中的一种，如果不符合，抛出异常IllegalArgumentException
      * */
-    void add(String key, String sort);
+    void addOrder(String key, String sort);
 }

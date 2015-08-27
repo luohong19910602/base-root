@@ -11,10 +11,14 @@ import java.util.List;
  * select * from order,customer where order.customer_id = '1234'
  * 这里面，key变成了order.customer_id
  * 
+ * 在这里面，如果查询条件为日期类型，那么支持between查询，所以在添加时，需要把日期区间的参数封装为如下格式
+ * '[startTime,endTime]'
+ * 
  * @author 骆宏
  * @date 2015-08-20 16:21
  * */
 public interface ICondition {
+	
 	/**
 	 * 数据类型，默认为字符串
 	 * number为数字类型，比如int，long，float等
@@ -64,6 +68,7 @@ public interface ICondition {
 
 	/**
 	 * 日期比较类型
+	 * 这里面默认支持四种比较操作：相等，大于等于，小于等于，在[start,end]范围内
 	 * */
 	public static class DateOpType{
 		public static List<String> types = new ArrayList<String>();
@@ -75,22 +80,32 @@ public interface ICondition {
 		 * >=
 		 * */
 		public static final String GT = "gt"; 
+		
 		/**
 		 * <=
 		 * */
 		public static final String LT = "lt";
+		
+		/**
+		 * between
+		 * */
+		public static final String BW = "bw";
 		
 		public static List<String> getOpTypes(){
 			if(types.size() == 0){
 				types.add(EQ);
 				types.add(GT);
 				types.add(LT);
+				types.add(BW);
 				return types;
 			}else{
 				return types;
 			}
 		}
 		
+		/**
+		 * 检测该类型是否为合法类型
+		 * */
 		public static boolean in(String type){
 			return getOpTypes().contains(type);
 		}
@@ -118,7 +133,7 @@ public interface ICondition {
 		 * !=
 		 * */
 		public static final String NQ = "nq";
-
+        
 		public static List<String> getOpTypes(){
 			if(types.size() == 0){
 				types.add(EQ);
@@ -143,6 +158,7 @@ public interface ICondition {
 	 * 查询条件名称
 	 * */
 	String key(); 
+	
 	/**
 	 * 类型
 	 * */
@@ -152,6 +168,7 @@ public interface ICondition {
 	 * 查询条件的关系，比如like，>，==，!=
 	 * */
 	String op();
+	
 	/**
 	 * 值
 	 * */

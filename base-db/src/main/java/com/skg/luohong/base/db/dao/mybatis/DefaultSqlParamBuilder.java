@@ -9,6 +9,7 @@ import java.util.Map;
 import com.skg.luohong.base.core.page.IPage;
 import com.skg.luohong.base.db.dao.ICondition;
 import com.skg.luohong.base.db.dao.IOrder;
+import com.skg.luohong.base.db.dao.IQuery;
 import com.skg.luohong.base.db.dao.ISqlParamBuilder;
 import com.skg.luohong.base.db.dao.SqlParam;
 
@@ -26,6 +27,8 @@ public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 
 	private int offset;
 	private int limit;
+	
+	private String type = IQuery.AND;
 
 	public DefaultSqlParamBuilder(){
 
@@ -55,10 +58,11 @@ public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 			if(i == conditionList.size() - 1){				
 				sb.append(conditionList.get(i).getSql());
 			}else{
-				sb.append(conditionList.get(i).getSql() + " and ");
+				sb.append(conditionList.get(i).getSql() + " " + getType() + " ");
 			}
 		}
 
+		System.out.println(sb.toString());
 		return sb.toString();
 	}
 
@@ -88,7 +92,7 @@ public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 	}
 
 	@Override
-	public void add(String key, String sort) {
+	public void addOrder(String key, String sort) {
 		if(key == null) throw new IllegalArgumentException("Key can't be null");
 
 		if(sort.equalsIgnoreCase(IOrder.DESC)){
@@ -117,7 +121,10 @@ public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 
 
 	public void setOffset(int offset){
-
+        if(offset < 0){
+        	throw new IllegalArgumentException("Please check offset argument, it must be bigger than 0");
+        }
+		this.offset = offset;
 	}
 
 	@Override
@@ -130,6 +137,23 @@ public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 		return limit;
 	}
 
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public void setType(String type) {
+		if(type.equals(IQuery.AND)){
+			this.type = type;
+		}else if(type.equals(IQuery.OR)){
+			this.type = type;
+		}else{
+			throw new IllegalArgumentException("Please check type argument, it must be in [and, or]");
+		}
+	}
+	
 	@Override
 	public SqlParam buildSqlParam() {
 		return new SqlParam(getWhereSql(), getOrderBySql(), getLimitSql());
@@ -138,64 +162,60 @@ public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 	public static void main(String[] args) {
 		DefaultSqlParamBuilder builder = new DefaultSqlParamBuilder();
 		Condition eq = new Condition("name", "eq", "骆宏");
-		System.out.println(eq);
 		System.out.println(eq.getSql());
 		builder.addCondition(eq);
 
 		Condition nq = new Condition("name", "nq", "骆宏");
-		System.out.println(nq);
+		
 		System.out.println(nq.getSql());	
 		builder.addCondition(nq);
 
 		Condition con = new Condition("name", "like", "骆宏");
-		System.out.println(con);
 		System.out.println(con.getSql());
 		builder.addCondition(con);
 
 		Condition num = new Condition("sort", "gt", "10", ICondition.NUMBER_TYPE);
-		System.out.println(num);
 		System.out.println(num.getSql());
 		builder.addCondition(num);
 
 		Condition eqnum = new Condition("sort", "eq", "10", ICondition.NUMBER_TYPE);
-		System.out.println(eqnum);
 		System.out.println(eqnum.getSql());
 
 		builder.addCondition(eqnum);
 		Condition nqnum = new Condition("sort", "nq", "10", ICondition.NUMBER_TYPE);
-		System.out.println(nqnum);
 		System.out.println(nqnum.getSql());
 
 		Condition ltnum = new Condition("sort", "lt", "10", ICondition.NUMBER_TYPE);
-		System.out.println(ltnum);
 		System.out.println(ltnum.getSql());
 
 		builder.addCondition(ltnum);
 
 		Condition date = new Condition("createTime", "gt", new Date(), "date");
-		System.out.println(date);
 		System.out.println(date.getSql());
 		builder.addCondition(date);
 		Condition ltdate = new Condition("createTime", "lt", new Date(), "date");
-		System.out.println(ltdate);
 		System.out.println(ltdate.getSql());
 		builder.addCondition(ltdate);
 
 		Condition eqdate = new Condition("createTime", "eq", new Date(), "date");
-		System.out.println(eqdate);
 		System.out.println(eqdate.getSql());
 		builder.addCondition(eqdate);
 
-		builder.add("name", "desc");
-		builder.add("age", "DESC");
-		builder.add("tel", "Desc");
-		builder.add("mobile", "Asc");
-		builder.add("email", "asc");
-		builder.add("id", "ASC");
+		builder.addOrder("name", "desc");
+		builder.addOrder("age", "DESC");
+		builder.addOrder("tel", "Desc");
+		builder.addOrder("mobile", "Asc");
+		builder.addOrder("email", "asc");
+		builder.addOrder("id", "ASC");
 		builder.setLimit(10);
+		
+		Condition bw = new Condition("startTime", "bw", "[2015-07-23,2016-06-26]", ICondition.DATE_TYPE);
+		builder.addCondition(bw);
+		builder.setType("or");
 
 		System.out.println(builder.getWhereSql() + builder.getOrderBySql() + builder.getLimitSql());
 		System.out.println(builder.buildSqlParam());
 	}
+
 
 }

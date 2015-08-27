@@ -39,9 +39,18 @@ public class Condition implements ICondition {
 		}else{
 			this.type = ICondition.DEFAULT_TYPE;
 		}
-
+        
 		checkOp(op, type);
         
+		//type为date类型，op为between类型的值做判断，查看值是否为该格式： '[startTime,endTime]'
+		
+		
+		if(type.equals(ICondition.DATE_TYPE) && op.equals(ICondition.DateOpType.BW)){
+			String temp = (String) value;
+			if(temp.split(",").length != 2){
+				throw new IllegalArgumentException("Please check value argument, it must be '[startTime, endTime]' patter");
+			}
+		}
 		this.op = op; 
 		this.key = key;
 		this.value = value;
@@ -63,7 +72,7 @@ public class Condition implements ICondition {
 			}
 		}else if(type.equals(ICondition.DATE_TYPE)){
 			if(!ICondition.DateOpType.in(op)){
-				throw new IllegalArgumentException("Please check op argument, It must be in [eq,like,nq]");
+				throw new IllegalArgumentException("Please check op argument, It must be in [eq,gt,lt,bw]");
 			}
 		}else{
 			throw new IllegalArgumentException("Please check type argument, It must be in [string,date,number]");
@@ -102,6 +111,8 @@ public class Condition implements ICondition {
 				return key + " like '%" + value + "%'"; 
 			}else if(op.equals(ICondition.StringOpType.EQ)){
 				return key + " = '" + value + "'";
+			}else if(op.equals(ICondition.StringOpType.NQ)){
+				return key + " != '" + value + "'";
 			}
 		}else if(type.equals(ICondition.NUMBER_TYPE)){
 			if(op.equals(ICondition.NumberOpType.EQ)){
@@ -116,12 +127,16 @@ public class Condition implements ICondition {
 		}else if(type.equals(ICondition.DATE_TYPE)){
 			if(op.equals(ICondition.DateOpType.EQ)){
 				return key + " = '" + value + "'";
-			}else if(op.equals(ICondition.NumberOpType.GT)){
+			}else if(op.equals(ICondition.DateOpType.GT)){
 				return key + " >= '" + value + "'";
-			}else if(op.equals(ICondition.NumberOpType.LT)){
+			}else if(op.equals(ICondition.DateOpType.LT)){
 				return key + " <= '" + value + "'";
-			}else if(op.equals(ICondition.NumberOpType.NQ)){
-				return key + " != '" + value + "'";
+			}else if(op.equals(ICondition.DateOpType.BW)){
+				String temp = ((String)value).replace("[", "");
+				temp = temp.replace("]", "");
+				String start = temp.split(",")[0].trim();
+				String end = temp.split(",")[1].trim();
+				return key + " between '" + start + "' and '" + end + "'";
 			}
 		}
 		return "";
@@ -172,9 +187,9 @@ public class Condition implements ICondition {
 		System.out.println(eqdate);
 		System.out.println(eqdate.getSql());
 		
-		Condition nqdate = new Condition("createTime", "nq", new Date(), "date");
-		System.out.println(nqdate);
-		System.out.println(nqdate.getSql());
 		
+		Condition bw = new Condition("startTime", "bw", "[2015-07-23,2016-06-26]", ICondition.DATE_TYPE);
+		System.out.println(bw.getSql());
+		System.out.println(bw); 
 	}
 }
