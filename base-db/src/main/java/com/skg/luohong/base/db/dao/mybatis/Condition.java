@@ -10,21 +10,21 @@ import com.skg.luohong.base.db.dao.ICondition;
  * @date 2015-08-20 16:26
  * */
 public class Condition implements ICondition {
-	private String key;
+	private String name;
 	private String type;
 	private String op;
 	private Object value;
 
-	public Condition(String key, String op, Object value){
-        this(key, op, value, ICondition.DEFAULT_TYPE);
+	public Condition(String name, String op, Object value){
+        this(name, op, value, ICondition.DEFAULT_TYPE);
 	}
 
-	public Condition(String key, String op, Object value, String type) {
+	public Condition(String name, String op, Object value, String type) {
 		if(value == null){
 			throw new IllegalArgumentException("value can't be null");
 		}
-		if(key == null){
-			throw new IllegalArgumentException("key can't be null");
+		if(name == null){
+			throw new IllegalArgumentException("name can't be null");
 		}
 
 		//默认为字符串类型
@@ -46,13 +46,13 @@ public class Condition implements ICondition {
 		
 		
 		if(type.equals(ICondition.DATE_TYPE) && op.equals(ICondition.DateOpType.BW)){
-			String temp = (String) value;
+			String temp = value.toString();
 			if(temp.split(",").length != 2){
 				throw new IllegalArgumentException("Please check value argument, it must be '[startTime, endTime]' patter");
 			}
 		}
 		this.op = op; 
-		this.key = key;
+		this.name = name;
 		this.value = value;
 	}
 
@@ -80,8 +80,8 @@ public class Condition implements ICondition {
 	}
 
 	@Override
-	public String key() {
-		return key;
+	public String name() {
+		return name;
 	}
 
 	@Override
@@ -101,42 +101,42 @@ public class Condition implements ICondition {
 
 	@Override
 	public String toString(){
-		return key + " " + op + " " + value + ",type:" + type;
+		return name + " " + op + " " + value + ",type:" + type;
 	}
 
 	@Override
 	public String getSql() {
 		if(type.equals(ICondition.DEFAULT_TYPE)){
 			if(op.equals(ICondition.StringOpType.LIKE)){
-				return key + " like '%" + value + "%'"; 
+				return name + " like '%" + value + "%'"; 
 			}else if(op.equals(ICondition.StringOpType.EQ)){
-				return key + " = '" + value + "'";
+				return name + " = '" + value + "'";
 			}else if(op.equals(ICondition.StringOpType.NQ)){
-				return key + " != '" + value + "'";
+				return name + " != '" + value + "'";
 			}
 		}else if(type.equals(ICondition.NUMBER_TYPE)){
 			if(op.equals(ICondition.NumberOpType.EQ)){
-				return key + " = " + value;
+				return name + " = " + value;
 			}else if(op.equals(ICondition.NumberOpType.GT)){
-				return key + " >= " + value;
+				return name + " >= " + value;
 			}else if(op.equals(ICondition.NumberOpType.LT)){
-				return key + " <= " + value;
+				return name + " <= " + value;
 			}else if(op.equals(ICondition.NumberOpType.NQ)){
-				return key + " != " + value;
+				return name + " != " + value;
 			}
 		}else if(type.equals(ICondition.DATE_TYPE)){
 			if(op.equals(ICondition.DateOpType.EQ)){
-				return key + " = '" + value + "'";
+				return name + " = '" + value + "'";
 			}else if(op.equals(ICondition.DateOpType.GT)){
-				return key + " >= '" + value + "'";
+				return name + " >= '" + value + "'";
 			}else if(op.equals(ICondition.DateOpType.LT)){
-				return key + " <= '" + value + "'";
+				return name + " <= '" + value + "'";
 			}else if(op.equals(ICondition.DateOpType.BW)){
 				String temp = ((String)value).replace("[", "");
 				temp = temp.replace("]", "");
 				String start = temp.split(",")[0].trim();
 				String end = temp.split(",")[1].trim();
-				return key + " between '" + start + "' and '" + end + "'";
+				return name + " between '" + start + "' and '" + end + "'";
 			}
 		}
 		return "";

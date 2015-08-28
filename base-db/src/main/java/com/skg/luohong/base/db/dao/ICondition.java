@@ -157,7 +157,7 @@ public interface ICondition {
 	/**
 	 * 查询条件名称
 	 * */
-	String key(); 
+	String name(); 
 	
 	/**
 	 * 类型

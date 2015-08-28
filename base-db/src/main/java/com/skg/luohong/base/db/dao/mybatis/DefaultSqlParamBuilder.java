@@ -216,6 +216,4 @@ public class DefaultSqlParamBuilder implements ISqlParamBuilder {
 		System.out.println(builder.getWhereSql() + builder.getOrderBySql() + builder.getLimitSql());
 		System.out.println(builder.buildSqlParam());
 	}
-
-
 }

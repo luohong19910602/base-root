@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 所有的po继承该类，目的是提供一些通用属性
  * */
 public abstract class AbstractPo<PK extends Serializable> implements IPO<PK>  {
     private PK id;

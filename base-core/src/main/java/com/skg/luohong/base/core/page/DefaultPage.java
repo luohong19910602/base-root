@@ -12,6 +12,10 @@ public class DefaultPage implements IPage{
 	private int totalRecords; 
 	private int pageNumber = 1;  //default page is 1
 	
+	public DefaultPage(){
+		
+	}
+	
 	public DefaultPage(int totalRecords){
 		setTotalRecords(totalRecords);
 	}
